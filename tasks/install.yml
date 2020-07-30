@@ -1,0 +1,7 @@
+---
+# tasks/install.yml (ufw)
+# Prefix : ufw
+
+- name: Install ufw
+  apt:
+    name: ufw
