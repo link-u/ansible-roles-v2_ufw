@@ -85,7 +85,7 @@ ufw_port_settings: []
 ## 設定例
 # 例1. 基本的な書き方
 # ufw_port_settings:
-#   - to_port: "80"           # ポート番号 (必須).         ufw モジュールの to_proto と同じ形式
+#   - to_port: "80"           # ポート番号 (必須).         ufw モジュールの to_port と同じ形式
 #     rule: "allow"           # ルール (省略時は "allow"). ufw モジュールの rules と同じ形式
 #     proto: "tcp"            # トランスポート層のプロトコル (省略時は "any"). ufw モジュールの proto と同じ形式
 #     from_ip_list:           # IP アドレスの一覧 (必須). リストで定義する.
