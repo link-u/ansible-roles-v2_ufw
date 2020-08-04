@@ -1,0 +1,32 @@
+---
+# tasks/pre_check.yml (ufw)
+# Prefix : ufw
+
+- name: Check for deleted variables
+  shell: >-
+    echo "[WARNING]: 以下の変数は削除されました. 以下の URL を確認してください. @y_hashida";
+    echo "    https://github.com/link-u/ansible-roles-v2_ufw/blob/master/README.md#削除された変数の一覧";
+    {% if ufw_allow_ssh_from_ip_list is defined %}
+      echo "ufw_allow_ssh_from_ip_list";
+    {% endif %}
+
+    {% if ufw_package is defined %}
+      echo "ufw_package";
+    {% endif %}
+
+    {% if ufw_allow_ssh_from_anyware is defined %}
+      echo "ufw_allow_ssh_from_anyware";
+    {% endif %}
+
+    {% if ufw_state is defined %}
+      echo "ufw_state";
+    {% endif %}
+
+    {% if ufw_policy is defined %}
+      echo "ufw_policy";
+    {% endif %}
+  register: __ufw_check_vars
+  check_mode: no
+  changed_when:
+    - (__ufw_check_vars.stdout_lines | length) != 2
+  notify: "Print warning for ufw role (Check for deleted variables)"

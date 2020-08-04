@@ -1,0 +1,59 @@
+---
+# tasks/configure.yml (ufw)
+# Prefix : ufw
+
+- name: Start ufw.service
+  systemd:
+    name: ufw.service
+    state: started
+    enabled: yes
+
+- name: Set state and policy
+  ufw:
+    state: reset
+    policy: allow
+  when:
+    - ufw_reset_flag | bool
+
+- name: Setting /etc/default/ufw
+  lineinfile:
+    dest: /etc/default/ufw
+    regexp: "^{{ item.key }}="
+    line: "{{ item.key }}={{ item.value }}"
+  loop: "{{ ufw_default | dict2items }}"
+
+- name: Delete rule which is allow ssh from any IP addresses
+  ufw:
+    delete: True
+    rule: allow
+    proto: tcp
+    to_port: "22"
+    from: any
+
+- name: Allow connection from white list
+  ufw:
+    rule: "allow"
+    from: "{{ item }}"
+  loop: "{{ ufw_white_ip_list }}"
+  register: _white_ip_list_result
+
+- name: Setting allow or deny permitted ports from permitted source IP address
+  ufw:
+    to_port: "{{ item[0].to_port | string }}"
+    rule: "{{ item[0].rule | default('allow') }}"
+    proto: "{{ item[0].proto | default('any') }}"
+    from_ip: "{{ item[1] }}"
+  loop: "{{ ufw_port_settings | subelements('from_ip_list') }}"
+  register: _port_setting_result
+
+- name: Reload ufw settings
+  ufw:
+    state: reloaded
+  when:
+    - _white_ip_list_result.changed or _port_setting_result.changed
+
+- name: Set state and policy
+  ufw:
+    state: "enabled"
+    policy: "deny"
+
