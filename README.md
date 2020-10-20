@@ -1,5 +1,7 @@
 # UFW
 
+![ansible ci](https://github.com/link-u/ansible-roles-v2_ufw/workflows/ansible%20ci/badge.svg)
+
 ## 目次
 
 <!-- TOC depthFrom:2 -->
